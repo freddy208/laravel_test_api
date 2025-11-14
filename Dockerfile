@@ -1,7 +1,8 @@
-FROM php:8.2-fpm
+# Dockerfile.quick
+FROM php:8.2-cli
 
 RUN apt-get update && apt-get install -y \
-    libzip-dev zip unzip curl git \
+    zip unzip git curl libzip-dev \
     && docker-php-ext-install pdo_mysql zip
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -10,8 +11,10 @@ WORKDIR /var/www
 
 COPY . /var/www
 
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache || true
 
-CMD ["php-fpm"]
+EXPOSE 8000
+
+CMD PORT=${PORT:-8000} && php -S 0.0.0.0:$PORT -t public
