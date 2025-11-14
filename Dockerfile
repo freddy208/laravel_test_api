@@ -1,5 +1,4 @@
-# Dockerfile.quick
-FROM php:8.2-cli
+FROM php:8.3-cli
 
 RUN apt-get update && apt-get install -y \
     zip unzip git curl libzip-dev \
